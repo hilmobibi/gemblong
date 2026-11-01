@@ -122,11 +122,7 @@ def play(bet):
             print(f"Potential payout : {bet * multiplier:,.2f}")
             print()
             
-            print(
-                getattr(cowsay, level[rank])(
-                    f"{multiplier:.2f}x"
-                )
-            )
+            getattr(cowsay, level[rank])(f"{multiplier:.2f}x")
 
             time.sleep(DELAY)
 
