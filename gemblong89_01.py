@@ -2,6 +2,7 @@ import random
 import time
 import cowsay
 import os
+import signal
 
 
 def clear_screen():
@@ -9,13 +10,13 @@ def clear_screen():
 
 
 def press_enter_to_continue(prompt):
-    try:
-        input(prompt)
-    except KeyboardInterrupt:
-        pass
+    while True:
+        try:
+            input(prompt)
+            return
+        except KeyboardInterrupt:
+            continue
 
-
-clear_screen()
 
 # =========================
 # CONFIGURATION
@@ -112,10 +113,12 @@ def play(bet):
 
     clear_screen()
 
-    try:
-        print("GAME STARTED!")
-        time.sleep(1)
+    print("GAME STARTED!")
+    time.sleep(1)
 
+    previous_sigint_handler = signal.signal(signal.SIGINT, signal.default_int_handler)
+    cashed_out = False
+    try:
         while True:
 
             rank = get_rank(multiplier)
@@ -136,10 +139,12 @@ def play(bet):
             time.sleep(DELAY)
 
             multiplier += increment[rank]
-
     except KeyboardInterrupt:
+        cashed_out = True
+    finally:
+        signal.signal(signal.SIGINT, previous_sigint_handler)
 
-        # Cash out
+    if cashed_out:
         payout = bet * multiplier
         balance += payout
 
@@ -173,6 +178,9 @@ def play(bet):
 def main():
     global balance
 
+    signal.signal(signal.SIGINT, signal.SIG_IGN)
+    clear_screen()
+
     while True:
 
         if balance < MIN_BALANCE:
@@ -189,7 +197,10 @@ def main():
         print("\n1. PLAY")
         print("2. EXIT")
 
-        choice = input("\nSelect menu: ")
+        try:
+            choice = input("\nSelect menu: ")
+        except KeyboardInterrupt:
+            continue
 
         if choice == "1":
             try:
@@ -227,11 +238,7 @@ def main():
 
 
 if __name__ == "__main__":
-    try:
-        main()
-    except KeyboardInterrupt:
-        clear_screen()
-        print("\nThanks for playing!")
+    main()
 
 
 
