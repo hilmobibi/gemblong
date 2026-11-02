@@ -210,12 +210,15 @@ def main():
         except KeyboardInterrupt:
             continue
 
-        try:
-            bet = float(bet_input)
-        except ValueError:
-            print("Invalid bet!")
-            time.sleep(1)
-            continue
+        if bet_input.strip().lower() in ("allin", "all in"):
+            bet = balance
+        else:
+            try:
+                bet = float(bet_input)
+            except ValueError:
+                print("Invalid bet!")
+                time.sleep(1)
+                continue
 
         if bet <= 0:
             print("Bet must be greater than 0!")
