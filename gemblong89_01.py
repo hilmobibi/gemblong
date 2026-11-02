@@ -8,6 +8,13 @@ def clear_screen():
     os.system("cls" if os.name == "nt" else "clear")
 
 
+def press_enter_to_continue(prompt):
+    try:
+        input(prompt)
+    except KeyboardInterrupt:
+        pass
+
+
 clear_screen()
 
 # =========================
@@ -47,7 +54,10 @@ def crash_point():
         return 1
 
     elif region <= 400:
-        return random.uniform(1, 2)
+        return random.uniform(1,1.5)
+    
+    elif region <= 650:
+        return random.uniform(1.5, 2)
 
     elif region <= 800:
         return random.uniform(2, 4)
@@ -102,10 +112,9 @@ def play(bet):
 
     clear_screen()
 
-    print("GAME STARTED!")
-    time.sleep(1)
-
     try:
+        print("GAME STARTED!")
+        time.sleep(1)
 
         while True:
 
@@ -136,7 +145,7 @@ def play(bet):
 
         clear_screen()
 
-        input(
+        press_enter_to_continue(
             "YOU CASHED OUT!\n"
             f"Cash out multiplier : {multiplier:.2f}x\n"
             f"Your payout         : {payout:,.2f}\n"
@@ -148,7 +157,7 @@ def play(bet):
     # Lose
     clear_screen()
 
-    input(
+    press_enter_to_continue(
         "YOU LOST!\n"
         f"BOOM! CRASHED AT {cp:.2f}x\n"
         f"Lost bet : {bet:,.2f}\n"
@@ -161,28 +170,39 @@ def play(bet):
 # MAIN MENU
 # =========================
 
-while True:
+def main():
+    global balance
 
-    if balance < MIN_BALANCE:
-        balance = MIN_BALANCE
+    while True:
 
-    clear_screen()
+        if balance < MIN_BALANCE:
+            balance = MIN_BALANCE
 
-    print("==========================")
-    print("       CRASH GAME")
-    print("==========================")
-    print(f"BALANCE: {balance:,.2f}")
-    print("==========================")
+        clear_screen()
 
-    print("\n1. PLAY")
-    print("2. EXIT")
+        print("==========================")
+        print("       CRASH GAME")
+        print("==========================")
+        print(f"BALANCE: {balance:,.2f}")
+        print("==========================")
 
-    choice = input("\nSelect menu: ")
+        print("\n1. PLAY")
+        print("2. EXIT")
 
-    if choice == "1":
+        choice = input("\nSelect menu: ")
 
-        try:
-            bet = float(input("Enter your bet: "))
+        if choice == "1":
+            try:
+                bet_input = input("Enter your bet: ")
+            except KeyboardInterrupt:
+                continue
+
+            try:
+                bet = float(bet_input)
+            except ValueError:
+                print("Invalid bet!")
+                time.sleep(1)
+                continue
 
             if bet <= 0:
                 print("Bet must be greater than 0!")
@@ -196,18 +216,22 @@ while True:
 
             play(bet)
 
-        except ValueError:
-            print("Invalid bet!")
+        elif choice == "2":
+            clear_screen()
+            print("Thanks for playing!")
+            break
+
+        else:
+            print("Invalid menu!")
             time.sleep(1)
 
-    elif choice == "2":
-        clear_screen()
-        print("Thanks for playing!")
-        break
 
-    else:
-        print("Invalid menu!")
-        time.sleep(1)
+if __name__ == "__main__":
+    try:
+        main()
+    except KeyboardInterrupt:
+        clear_screen()
+        print("\nThanks for playing!")
 
 
 
