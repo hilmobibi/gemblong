@@ -118,46 +118,56 @@ def play(bet):
 
     previous_sigint_handler = signal.signal(signal.SIGINT, signal.default_int_handler)
     cashed_out = False
+    cashout_multiplier = 0
+    payout = 0
     try:
         while True:
+            try:
+                rank = get_rank(multiplier)
 
-            rank = get_rank(multiplier)
+                if multiplier >= cp:
+                    if cashed_out:
+                        clear_screen()
+                        print("YOU CASHED OUT!")
+                        print(f"Cash out multiplier : {cashout_multiplier:.2f}x")
+                        print(f"Your payout         : {payout:,.2f}")
+                        print(f"New balance         : {balance:,.2f}")
+                        print()
+                        print(f"BOOM! CRASHED AT {cp:.2f}x")
+                        getattr(cowsay, level[get_rank(cp)])(f"BOOM! {cp:.2f}x")
+                        press_enter_to_continue("press enter to continue.. ")
+                    break
 
-            # Crash check
-            if multiplier >= cp:
-                break
+                clear_screen()
 
-            clear_screen()
+                print(f"Balance : {balance:,.2f}")
+                print(f"Bet     : {bet:,.2f}")
+                print(f"Potential payout : {bet * multiplier:,.2f}")
+                if cashed_out:
+                    print("YOU CASHED OUT!")
+                    print(f"Cash out multiplier : {cashout_multiplier:.2f}x")
+                    print(f"Your payout         : {payout:,.2f}")
+                    print(f"New balance         : {balance:,.2f}")
+                    print("Watching until crash...")
+                else:
+                    print("[CTRL + C] → CASH OUT")
+                print()
 
-            print(f"Balance : {balance:,.2f}")
-            print(f"Bet     : {bet:,.2f}")
-            print(f"Potential payout : {bet * multiplier:,.2f}")
-            print("[CTRL + C] → CASH OUT")
-            print()
-            
-            getattr(cowsay, level[rank])(f"{multiplier:.2f}x")
+                getattr(cowsay, level[rank])(f"{multiplier:.2f}x")
 
-            time.sleep(DELAY)
+                time.sleep(DELAY)
 
-            multiplier += increment[rank]
-    except KeyboardInterrupt:
-        cashed_out = True
+                multiplier += increment[rank]
+            except KeyboardInterrupt:
+                if not cashed_out:
+                    cashout_multiplier = multiplier
+                    payout = bet * cashout_multiplier
+                    balance += payout
+                    cashed_out = True
     finally:
         signal.signal(signal.SIGINT, previous_sigint_handler)
 
     if cashed_out:
-        payout = bet * multiplier
-        balance += payout
-
-        clear_screen()
-
-        press_enter_to_continue(
-            "YOU CASHED OUT!\n"
-            f"Cash out multiplier : {multiplier:.2f}x\n"
-            f"Your payout         : {payout:,.2f}\n"
-            f"New balance         : {balance:,.2f}\n"
-            "press enter to continue.. "
-        )
         return
 
     # Lose
