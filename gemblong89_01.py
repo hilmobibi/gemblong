@@ -205,47 +205,29 @@ def main():
         print(f"BALANCE: {balance:,.2f}")
         print("==========================")
 
-        print("\n1. PLAY")
-        print("2. EXIT")
-
         try:
-            choice = input("\nSelect menu: ")
+            bet_input = input("\nEnter your bet: ")
         except KeyboardInterrupt:
             continue
 
-        if choice == "1":
-            try:
-                bet_input = input("Enter your bet: ")
-            except KeyboardInterrupt:
-                continue
-
-            try:
-                bet = float(bet_input)
-            except ValueError:
-                print("Invalid bet!")
-                time.sleep(1)
-                continue
-
-            if bet <= 0:
-                print("Bet must be greater than 0!")
-                time.sleep(1)
-                continue
-
-            if bet > balance:
-                print("Insufficient balance!")
-                time.sleep(1)
-                continue
-
-            play(bet)
-
-        elif choice == "2":
-            clear_screen()
-            print("Thanks for playing!")
-            break
-
-        else:
-            print("Invalid menu!")
+        try:
+            bet = float(bet_input)
+        except ValueError:
+            print("Invalid bet!")
             time.sleep(1)
+            continue
+
+        if bet <= 0:
+            print("Bet must be greater than 0!")
+            time.sleep(1)
+            continue
+
+        if bet > balance:
+            print("Insufficient balance!")
+            time.sleep(1)
+            continue
+
+        play(bet)
 
 
 if __name__ == "__main__":
