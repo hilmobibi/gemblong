@@ -132,6 +132,7 @@ def play(bet):
             print(f"Balance : {balance:,.2f}")
             print(f"Bet     : {bet:,.2f}")
             print(f"Potential payout : {bet * multiplier:,.2f}")
+            print("[CTRL + C] → CASH OUT")
             print()
             
             getattr(cowsay, level[rank])(f"{multiplier:.2f}x")
