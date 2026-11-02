@@ -140,9 +140,6 @@ def play(bet):
 
                 clear_screen()
 
-                print(f"Balance : {balance:,.2f}")
-                print(f"Bet     : {bet:,.2f}")
-                print(f"Potential payout : {bet * multiplier:,.2f}")
                 if cashed_out:
                     print("YOU CASHED OUT!")
                     print(f"Cash out multiplier : {cashout_multiplier:.2f}x")
@@ -150,6 +147,9 @@ def play(bet):
                     print(f"New balance         : {balance:,.2f}")
                     print("Watching until crash...")
                 else:
+                    print(f"Balance : {balance:,.2f}")
+                    print(f"Bet     : {bet:,.2f}")
+                    print(f"Potential payout : {bet * multiplier:,.2f}")
                     print("[CTRL + C] → CASH OUT")
                 print()
 
